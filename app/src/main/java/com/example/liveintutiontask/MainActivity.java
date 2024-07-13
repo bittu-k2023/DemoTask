@@ -22,8 +22,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -142,7 +145,10 @@ public class MainActivity extends AppCompatActivity {
 
                     String Startdate = data.get(position).startdate.replace("\"", "");
                     String Enddate = data.get(position).enddate.replace("\"", "");
-                    int TrufId = 20;
+                    int[] num={18,20,6,7,8,13};
+                    Random random=new Random();
+                    int i=random.nextInt(num.length);
+                    int TrufId = num[i];
                     JsonArray slots = new JsonArray();
                     JsonObject object = new JsonObject();
                     object.addProperty("turf_id", TrufId);
@@ -167,7 +173,11 @@ public class MainActivity extends AppCompatActivity {
                             }
                             JsonObject responseData = response.body();
                             if (response.code() == 200) {
-                                Toast.makeText(MainActivity.this, response.message(), Toast.LENGTH_SHORT).show();
+                                JsonElement jsonElement = responseData.get("response");
+                                JsonObject jsonObject=new JsonParser().parse(String.valueOf(jsonElement)).getAsJsonObject();
+                                String message=responseData.get("message").toString().replace("\"","");
+                                String orderId=jsonObject.get("order_id").toString().replace("\"","");
+                                Toast.makeText(MainActivity.this, message+"\n"+"Order Id : "+orderId, Toast.LENGTH_SHORT).show();
                             }
                         }
 
