@@ -13,8 +13,10 @@ import retrofit2.http.Url;
 public interface CallApiInterface {
     @POST
     Call<JsonObject> SendJSONRequestWithBodypost(@Url String url, @Body JsonObject jsonObject);
-    @GET
-    Call<JsonObject> SendJSONRequestWithBodyget(@Url String url, @Query("turf_id") int truf_id, @Query("date") String date);
+    @GET()
+    Call<JsonObject> SendJSONRequestWithBodyget(@Url String url, @Query("turf_id") int truf_id, @Query("date") String date,@Header("X-API-Key")String x_api,@Header("Content-Type")String contenttype, @Header("Caccept")String accept);
+    @GET()
+    Call<JsonObject> SendJSONRequestWithBodyalltrufs(@Url String url,@Header("X-API-Key")String x_api);
 
     @POST
     Call<JsonObject> SendJSONRequestWithoutBodypost(@Url String url);
