@@ -169,7 +169,6 @@ public class ShowTrufs extends AppCompatActivity {
                 trufName = (TextView) itemView.findViewById(R.id.trufName);
                 trufCategoryId = (TextView) itemView.findViewById(R.id.trufCategoryId);
                 iconContainer= (ImageView) itemView.findViewById(R.id.icon_container);
-
             }
         }
     }
