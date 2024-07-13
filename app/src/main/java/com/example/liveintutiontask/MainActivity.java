@@ -1,46 +1,34 @@
 package com.example.liveintutiontask;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.Callback;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -48,16 +36,19 @@ public class MainActivity extends AppCompatActivity {
     static {
         System.loadLibrary("native-lib");
     }
+
     List<LoadClassItem> data = new ArrayList<>();
+    ProgressDialog progressDialog;
     private RecyclerView trufdetails;
     private MyAdapterTruf mAdapter;
-    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         callTestApi();
     }
+
     private void callTestApi() {
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(MainActivity.this);
@@ -69,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         }
         Retrofit retrofit = ApiClient.getApiClient();
         CallApiInterface apiInterface = retrofit.create(CallApiInterface.class);
-        Call<JsonObject> call = apiInterface.SendJSONRequestWithBodyget(ConfigForAPIURL.AllTurfs,1,"2024-07-13","80b856a2acc361a849858e8123ccef26bef7452f11403072024160737","application/json","application/json");
+        Call<JsonObject> call = apiInterface.SendJSONRequestWithBodyget(ConfigForAPIURL.AllTurfs, 1, "2024-07-13", "80b856a2acc361a849858e8123ccef26bef7452f11403072024160737", "application/json", "application/json");
         call.enqueue(new Callback<JsonObject>() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -79,16 +70,15 @@ public class MainActivity extends AppCompatActivity {
                 }
                 JsonObject responseData = response.body();
                 if (response.code() == 200) {
-                    JsonElement jsonElement=responseData.get("response");
+                    JsonElement jsonElement = responseData.get("response");
                     JsonArray jsonArray = new JsonParser().parse(String.valueOf(jsonElement)).getAsJsonArray();
-                    for(int i=0;i<jsonArray.size();i++)
-                    {
-                        JsonObject jsonObject=jsonArray.get(i).getAsJsonObject();
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
                         LoadClassItem loadData = new LoadClassItem();
-                        loadData.startdate=jsonObject.get("start_time").toString();
-                        loadData.enddate=jsonObject.get("end_time").toString();
-                        loadData.baseprice=jsonObject.get("base_price").toString();
-                        loadData.available=jsonObject.get("available").toString();
+                        loadData.startdate = jsonObject.get("start_time").toString();
+                        loadData.enddate = jsonObject.get("end_time").toString();
+                        loadData.baseprice = jsonObject.get("base_price").toString();
+                        loadData.available = jsonObject.get("available").toString();
                         data.add(loadData);
                         trufdetails = findViewById(R.id.trufdetails);
                         mAdapter = new MyAdapterTruf(MainActivity.this, data);
@@ -97,9 +87,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable error) {
-                Log.d("API Response2",""+error);
+                Log.d("API Response2", "" + error);
             }
         });
     }
@@ -128,10 +119,9 @@ public class MainActivity extends AppCompatActivity {
             myHolder.enddate.setText(data.get(position).enddate.replace("\"", ""));
             myHolder.price.setText(data.get(position).baseprice.replace("\"", ""));
             myHolder.avalible.setText(data.get(position).available.replace("\"", ""));
-            if(data.get(position).available.replace("\"", "").equals("false"))
-            {
+            if (data.get(position).available.replace("\"", "").equals("false")) {
                 myHolder.bookslots.setVisibility(View.GONE);
-            }else {
+            } else {
                 myHolder.bookslots.setVisibility(View.VISIBLE);
             }
             myHolder.bookslots.setOnClickListener(new View.OnClickListener() {
@@ -139,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     bookmyslot();
                 }
+
                 private void bookmyslot() {
                     if (progressDialog == null) {
                         progressDialog = new ProgressDialog(MainActivity.this);
@@ -149,24 +140,24 @@ public class MainActivity extends AppCompatActivity {
                         progressDialog.show();
                     }
 
-                    String Startdate=data.get(position).startdate.replace("\"", "");
-                    String Enddate=data.get(position).enddate.replace("\"", "");
-                    int TrufId=20;
-                    JsonArray slots=new JsonArray();
-                    JsonObject object=new JsonObject();
-                    object.addProperty("turf_id",TrufId);
-                    object.addProperty("start_time",Startdate);
-                    object.addProperty("end_time",Enddate);
+                    String Startdate = data.get(position).startdate.replace("\"", "");
+                    String Enddate = data.get(position).enddate.replace("\"", "");
+                    int TrufId = 20;
+                    JsonArray slots = new JsonArray();
+                    JsonObject object = new JsonObject();
+                    object.addProperty("turf_id", TrufId);
+                    object.addProperty("start_time", Startdate);
+                    object.addProperty("end_time", Enddate);
                     slots.add(object);
-                   String user_first_name="test";
-                   String user_last_name= "user";
-                   String user_email= "tu1@gmail.com";
-                   String user_dial_code= "+91";
-                   String user_mobile_no= "9999999995";
-                   JsonObject requestData = new RequestResponseDataUtil().Bookslots(slots,user_first_name,user_last_name,user_email,user_dial_code,user_mobile_no);
+                    String user_first_name = "test";
+                    String user_last_name = "user";
+                    String user_email = "tu1@gmail.com";
+                    String user_dial_code = "+91";
+                    String user_mobile_no = "9999999995";
+                    JsonObject requestData = new RequestResponseDataUtil().Bookslots(slots, user_first_name, user_last_name, user_email, user_dial_code, user_mobile_no);
                     Retrofit retrofit = ApiClient.getApiClient();
                     CallApiInterface apiInterface = retrofit.create(CallApiInterface.class);
-                    Call<JsonObject> call = apiInterface.SendJSONRequestWithBodypost(ConfigForAPIURL.BookSlots,requestData);
+                    Call<JsonObject> call = apiInterface.SendJSONRequestWithBodypost(ConfigForAPIURL.BookSlots, requestData,"80b856a2acc361a849858e8123ccef26bef7452f11403072024160737");
                     call.enqueue(new Callback<JsonObject>() {
                         @SuppressLint("SetTextI18n")
                         @Override
@@ -179,16 +170,15 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(MainActivity.this, response.message(), Toast.LENGTH_SHORT).show();
                             }
                         }
+
                         @Override
                         public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable error) {
-                            Log.d("API Response2",""+error);
+                            Log.d("API Response2", "" + error);
                         }
                     });
                 }
             });
         }
-
-
 
 
         @Override
@@ -202,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
             private TextView price;
             private TextView avalible;
             private Button bookslots;
+
             public MyHolder(View itemView) {
                 super(itemView);
 

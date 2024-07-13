@@ -20,7 +20,6 @@ public class RequestResponseDataUtil {
         requestJson.addProperty("user_email", email);
         requestJson.addProperty("user_dial_code", dialcode);
         requestJson.addProperty("user_mobile_no", mob);
-        requestJson.addProperty("X-API-Key", "80b856a2acc361a849858e8123ccef26bef7452f11403072024160737");
         return requestJson;
     }
 }
