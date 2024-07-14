@@ -22,9 +22,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import org.json.JSONObject;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -61,9 +62,13 @@ public class MainActivity extends AppCompatActivity {
         if (!MainActivity.this.isFinishing()) {
             progressDialog.show();
         }
+        Date currentDate = new Date();
+        @SuppressLint("SimpleDateFormat")
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = dateFormat.format(currentDate);
         Retrofit retrofit = ApiClient.getApiClient();
         CallApiInterface apiInterface = retrofit.create(CallApiInterface.class);
-        Call<JsonObject> call = apiInterface.SendJSONRequestWithBodyget(ConfigForAPIURL.AllTurfs, 1, "2024-07-13", "80b856a2acc361a849858e8123ccef26bef7452f11403072024160737", "application/json", "application/json");
+        Call<JsonObject> call = apiInterface.SendJSONRequestWithBodyget(ConfigForAPIURL.AllTurfs, 1, formattedDate, "80b856a2acc361a849858e8123ccef26bef7452f11403072024160737", "application/json", "application/json");
         call.enqueue(new Callback<JsonObject>() {
             @SuppressLint("SetTextI18n")
             @Override
